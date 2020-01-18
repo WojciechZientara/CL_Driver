@@ -44,4 +44,9 @@ public class Advice {
     private Set<Conversation> conversation;
 
     private LocalDateTime created;
+
+    @PrePersist
+    public void prePersist() {
+        created = LocalDateTime.now();
+    }
 }

@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 
 @Getter @Setter @NoArgsConstructor
@@ -22,4 +23,13 @@ public class Display {
     @NotNull
     @ManyToOne
     private Advice advice;
+
+    private LocalDateTime created;
+
+    @PrePersist
+    public void prePersist() {
+        created = LocalDateTime.now();
+    }
+
+
 }
