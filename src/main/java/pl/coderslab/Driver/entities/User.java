@@ -6,10 +6,10 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Getter @Setter @NoArgsConstructor
+@Entity
 @Table(name = "users")
 public class User {
 
@@ -30,12 +30,15 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private Set<Test> tests;
+    private Set<TestResult> testResults;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<Message> messages;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<Display> displays;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private Set<Advice> advices;
 
 }

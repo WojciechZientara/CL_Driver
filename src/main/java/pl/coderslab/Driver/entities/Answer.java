@@ -5,23 +5,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.Set;
+
 
 @Getter @Setter @NoArgsConstructor
 @Entity
-@Table(name = "conversations")
-public class Conversation {
+@Table(name = "answers")
+public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @ManyToOne
-    private Advice advice;
+    private Test test;
 
-    @OneToMany(mappedBy = "conversation", cascade = CascadeType.REMOVE)
-    private Set<Message> messages;
+    private boolean isCorrect;
 
 }

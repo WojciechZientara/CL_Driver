@@ -6,11 +6,11 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.util.Set;
 
 
 @Getter @Setter @NoArgsConstructor
+@Entity
 @Table(name = "tests")
 public class Test {
 
@@ -19,19 +19,13 @@ public class Test {
     private Long id;
 
     @NotNull
-    @ManyToOne
-    private User user;
-
-    @NotNull
-    @ManyToOne
+    @OneToOne
     private Advice advice;
 
     @OneToMany(mappedBy = "test", cascade = CascadeType.REMOVE)
     private Set<Answer> answers;
 
-    @OneToOne(mappedBy = "test", cascade = CascadeType.REMOVE)
-    private Answer givenAnswer;
-
-    private boolean isAnswerCorrect;
+    @OneToMany(mappedBy = "test", cascade = CascadeType.REMOVE)
+    private Set<TestResult> testResults;
 
 }

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter @Setter @NoArgsConstructor
+@Entity
 @Table(name = "advices")
 public class Advice {
 
@@ -23,7 +24,7 @@ public class Advice {
     private User user;
 
     @NotBlank
-    private String name;
+    private String title;
 
     @NotBlank
     @Column(columnDefinition = "TEXT")

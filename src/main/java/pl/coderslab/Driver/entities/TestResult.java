@@ -3,17 +3,15 @@ package pl.coderslab.Driver.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 
 @Getter @Setter @NoArgsConstructor
 @Entity
-@Table(name = "messages")
-public class Message {
+@Table(name = "test_results")
+public class TestResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,15 +19,16 @@ public class Message {
 
     @NotNull
     @ManyToOne
-    private Conversation conversation;
-
-    @NotBlank
-    @Column(columnDefinition = "TEXT")
-    private String content;
+    private Test test;
 
     @NotNull
     @ManyToOne
     private User user;
+
+    @OneToOne(mappedBy = "test", cascade = CascadeType.REMOVE)
+    private Answer givenAnswer;
+
+    private boolean isAnswerCorrect;
 
     private LocalDateTime created;
 
@@ -37,6 +36,5 @@ public class Message {
     public void prePersist() {
         created = LocalDateTime.now();
     }
-
 
 }
