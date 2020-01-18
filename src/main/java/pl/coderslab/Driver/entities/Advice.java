@@ -37,7 +37,7 @@ public class Advice {
     @OneToOne
     private Test test;
 
-    @OneToMany
+    @OneToMany(mappedBy = "advice", cascade = CascadeType.REMOVE)
     private Set<Display> displays;
 
     @OneToMany
