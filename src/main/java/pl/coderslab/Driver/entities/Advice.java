@@ -3,7 +3,6 @@ package pl.coderslab.Driver.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.aspectj.weaver.ast.Test;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -34,7 +33,7 @@ public class Advice {
     @Column(columnDefinition = "BLOB")
     private byte[] appendix;
 
-    @OneToOne
+    @OneToOne(mappedBy = "advice", cascade = CascadeType.REMOVE)
     private Test test;
 
     @OneToMany(mappedBy = "advice", cascade = CascadeType.REMOVE)

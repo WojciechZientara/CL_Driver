@@ -3,7 +3,6 @@ package pl.coderslab.Driver.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.aspectj.weaver.ast.Test;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -35,5 +34,8 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<Message> messages;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private Set<Display> displays;
 
 }

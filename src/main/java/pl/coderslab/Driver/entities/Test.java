@@ -7,11 +7,12 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 
 @Getter @Setter @NoArgsConstructor
-@Table(name = "displays")
-public class Display {
+@Table(name = "tests")
+public class Test {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,12 +26,12 @@ public class Display {
     @ManyToOne
     private Advice advice;
 
-    private LocalDateTime created;
+    @OneToMany(mappedBy = "test", cascade = CascadeType.REMOVE)
+    private Set<Answer> answers;
 
-    @PrePersist
-    public void prePersist() {
-        created = LocalDateTime.now();
-    }
+    @OneToOne(mappedBy = "test", cascade = CascadeType.REMOVE)
+    private Answer givenAnswer;
 
+    private boolean isAnswerCorrect;
 
 }
