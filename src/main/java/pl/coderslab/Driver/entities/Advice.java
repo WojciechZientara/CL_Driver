@@ -40,7 +40,7 @@ public class Advice {
     @OneToMany(mappedBy = "advice", cascade = CascadeType.REMOVE)
     private Set<Display> displays;
 
-    @OneToMany
+    @OneToMany(mappedBy = "advice", cascade = CascadeType.REMOVE)
     private Set<Conversation> conversation;
 
     private LocalDateTime created;
