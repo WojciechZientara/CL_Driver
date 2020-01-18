@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Getter @Setter @NoArgsConstructor
 @Table(name = "conversations")
@@ -19,7 +20,7 @@ public class Conversation {
     @ManyToOne
     private Advice advice;
 
-    @OneToMany
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.REMOVE)
     private Set<Message> messages;
 
 }
