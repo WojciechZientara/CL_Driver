@@ -3,6 +3,8 @@ package pl.coderslab.Driver.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -30,6 +32,7 @@ public class TestResult {
 
     private boolean isAnswerCorrect;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm")
     private LocalDateTime created;
 
     @PrePersist
