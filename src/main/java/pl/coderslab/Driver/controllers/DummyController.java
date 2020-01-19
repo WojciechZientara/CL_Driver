@@ -35,7 +35,7 @@ public class DummyController {
 
         //Users
         User user = new User();
-        user.setId(1L);
+        user.setId(7L);
         user.setFirstName("Jan");
         user.setLastName("Kowalski");
         user.setEmail("jk@wp.pl");
@@ -47,7 +47,7 @@ public class DummyController {
         userRepository.save(user);
 
         User user2 = new User();
-        user2.setId(2L);
+        user2.setId(8L);
         user2.setFirstName("Anna");
         user2.setLastName("Nowak");
         user2.setEmail("an@wp.pl");
@@ -59,7 +59,7 @@ public class DummyController {
         userRepository.save(user2);
 
         User user3 = new User();
-        user3.setId(3L);
+        user3.setId(9L);
         user3.setFirstName("Marek");
         user3.setLastName("Marecki");
         user3.setEmail("mm@wp.pl");
@@ -71,41 +71,16 @@ public class DummyController {
         userRepository.save(user3);
         
         //Advices
-        Advice advice = new Advice();
-        advice.setId(1L);
-        advice.setTitle("Advice 1");
-        advice.setContent("11111111");
-        advice.setCreated(LocalDateTime.now());
-        advice.setDisplays(new HashSet<>());
-        advice.setUser(user3);
-        adviceRepository.save(advice);
-
-        Advice advice2 = new Advice();
-        advice2.setId(2L);
-        advice2.setTitle("Advice 2");
-        advice2.setContent("22222222");
-        advice2.setCreated(LocalDateTime.now());
-        advice2.setDisplays(new HashSet<>());
-        advice2.setUser(user3);
-        adviceRepository.save(advice2);
-
-        Advice advice3 = new Advice();
-        advice3.setId(3L);
-        advice3.setTitle("Advice 3");
-        advice3.setContent("33333333");
-        advice3.setCreated(LocalDateTime.now());
-        advice3.setDisplays(new HashSet<>());
-        advice3.setUser(user3);
-        adviceRepository.save(advice3);
-
-        //Displays
-
-        Display display = new Display();
-        display.setId(1L);
-        display.setAdvice(adviceRepository.findAdviceById(1L));
-        display.setUser(userRepository.findUserById(1L));
-        display.setCreated(LocalDateTime.now());
-        displayRepository.save(display);
+        for (long i = 0; i < 20; i++) {
+            Advice advice = new Advice();
+            advice.setId(i);
+            advice.setTitle("Advice " + i);
+            advice.setContent("Content " + i);
+            advice.setCreated(LocalDateTime.now());
+            advice.setDisplays(new HashSet<>());
+            advice.setUser(user3);
+            adviceRepository.save(advice);
+        }
 
     }
     

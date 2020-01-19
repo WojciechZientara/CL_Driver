@@ -11,6 +11,8 @@ import pl.coderslab.Driver.entities.Advice;
 import pl.coderslab.Driver.entities.User;
 import pl.coderslab.Driver.repositories.AdviceRepository;
 import pl.coderslab.Driver.repositories.UserRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -32,7 +34,7 @@ public class AdviceController {
     @GetMapping("/getNew")
     public AdviceDto getNew(){
         //Dummy user - to be changed once the authentication is implemented
-        User user = userRepository.findUserById(1L);
+        User user = userRepository.findUserById(7L);
         List<Advice> newAdvices = adviceRepository.findNewAdvicesByUserId(user.getId());
 
         if (newAdvices.size() == 0) {
@@ -40,9 +42,20 @@ public class AdviceController {
             return new AdviceDto();
         } else {
             Advice newAdvice = newAdvices.get(0);
+            //mark advice as seen by user -> generates a new record in the displays table in the database
             displayConverter.markAdviceAsSeenByUser(newAdvice, user);
             return adviceConverter.convertAdviceToDto(newAdvice);
         }
+    }
+
+    @GetMapping("/getMostPopular")
+    public List<AdviceDto> getMostPopular() {
+        List<Advice> advices = adviceRepository.find10MostPopularAdvices();
+        List<AdviceDto> dtos = new ArrayList<>();
+        for (Advice advice : advices) {
+            dtos.add(adviceConverter.convertAdviceToDto(advice));
+        }
+        return dtos;
     }
 
 
