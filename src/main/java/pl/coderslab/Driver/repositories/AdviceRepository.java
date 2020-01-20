@@ -25,4 +25,11 @@ public interface AdviceRepository extends JpaRepository<Advice, Long> {
 
     @Query(value = "SELECT * FROM advices ORDER BY created DESC LIMIT 10", nativeQuery = true)
     List<Advice> find10NewestAdvices();
+
+    @Query(value = "SELECT advices.id AS id, appendix, content, advices.created AS created, title, " +
+            "advices.user_id AS user_id FROM displays LEFT JOIN advices ON displays.advice_id = advices.id " +
+            "WHERE displays.created > NOW() - INTERVAL 7 day GROUP BY advice_id ORDER BY COUNT(advice_id) DESC LIMIT 1",
+            nativeQuery = true)
+    Advice findTheMostPopularLastWeek();
 }
+

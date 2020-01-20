@@ -48,7 +48,7 @@ public class AdviceController {
         }
     }
 
-    @GetMapping("/getMostPopular")
+    @GetMapping("/get10MostPopular")
     public List<AdviceDto> getMostPopular() {
         List<Advice> advices = adviceRepository.find10MostPopularAdvices();
         List<AdviceDto> dtos = new ArrayList<>();
@@ -58,7 +58,13 @@ public class AdviceController {
         return dtos;
     }
 
-    @GetMapping("/getNewest")
+    @GetMapping("/getTheAdviceOfTheWeek")
+    public AdviceDto getTheAdviceOfTheWeek() {
+        Advice advice = adviceRepository.findTheMostPopularLastWeek();
+        return adviceConverter.convertAdviceToDto(advice);
+    }
+
+    @GetMapping("/get10Newest")
     public List<AdviceDto> getNewest() {
         List<Advice> advices = adviceRepository.find10NewestAdvices();
         List<AdviceDto> dtos = new ArrayList<>();
