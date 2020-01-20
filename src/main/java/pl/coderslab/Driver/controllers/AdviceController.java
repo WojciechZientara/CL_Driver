@@ -58,5 +58,14 @@ public class AdviceController {
         return dtos;
     }
 
+    @GetMapping("/getNewest")
+    public List<AdviceDto> getNewest() {
+        List<Advice> advices = adviceRepository.find10NewestAdvices();
+        List<AdviceDto> dtos = new ArrayList<>();
+        for (Advice advice : advices) {
+            dtos.add(adviceConverter.convertAdviceToDto(advice));
+        }
+        return dtos;
+    }
 
 }

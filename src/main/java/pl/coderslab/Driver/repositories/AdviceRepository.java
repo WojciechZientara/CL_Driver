@@ -22,4 +22,7 @@ public interface AdviceRepository extends JpaRepository<Advice, Long> {
             "GROUP BY advice_id ORDER BY COUNT(advice_id) DESC LIMIT 10",
             nativeQuery = true)
     List<Advice> find10MostPopularAdvices();
+
+    @Query(value = "SELECT * FROM advices ORDER BY created DESC LIMIT 10", nativeQuery = true)
+    List<Advice> find10NewestAdvices();
 }
