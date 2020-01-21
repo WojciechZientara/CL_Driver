@@ -6,4 +6,6 @@ import pl.coderslab.Driver.entities.Test;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
+    Answer findAnswerById(Long answerId);
+
 }
