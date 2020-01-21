@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ConversationRepository extends JpaRepository<Conversation, Long> {
 
-    @Query("SELECT c FROM Conversation c JOIN FETCH c.messages m WHERE c.id = ?1")
+//    @Query("SELECT c FROM Conversation c JOIN FETCH c.messages m WHERE c.id = ?1")
     Conversation findConversationById(Long conversationId);
 
     List<Conversation> findConversationsByAdvice_Id(Long adviceId);

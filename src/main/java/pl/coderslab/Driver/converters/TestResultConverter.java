@@ -7,6 +7,7 @@ import pl.coderslab.Driver.dto.TestResultDto;
 import pl.coderslab.Driver.entities.Answer;
 import pl.coderslab.Driver.entities.Test;
 import pl.coderslab.Driver.entities.TestResult;
+import pl.coderslab.Driver.entities.User;
 
 import java.util.HashSet;
 
@@ -20,5 +21,14 @@ public class TestResultConverter {
         testResultDto.setAnswerId(testResult.getGivenAnswer().getId());
         testResultDto.setAnswerCorrect(testResult.isAnswerCorrect());
         return testResultDto;
+    }
+
+    public TestResult recordResult(User user, Test test, Answer answer) {
+        TestResult testResult = new TestResult();
+        testResult.setTest(test);
+        testResult.setUser(user);
+        testResult.setGivenAnswer(answer);
+        testResult.setAnswerCorrect(answer.isCorrect());
+        return testResult;
     }
 }

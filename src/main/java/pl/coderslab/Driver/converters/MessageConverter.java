@@ -23,15 +23,11 @@ public class MessageConverter {
 
     @Autowired
     UserRepository userRepository;
-    
-    public Message convertMessageDtoToMessage(MessageDto messageDto, User user, Conversation conversation) {
-        Message message = setBasicMessageData(messageDto, user);
-        message.setConversation(conversation);
-        return message;
-    }
 
     public Message convertMessageDtoToMessage(MessageDto messageDto, User user) {
-        Message message = setBasicMessageData(messageDto, user);
+        Message message = new Message();
+        message.setContent(messageDto.getContent());
+        message.setUser(user);
         message.setConversation(conversationRepository.findConversationById(messageDto.getConversationId()));
         return message;
     }
@@ -46,10 +42,4 @@ public class MessageConverter {
         return messageDto;
     }
 
-    public Message setBasicMessageData(MessageDto messageDto, User user) {
-        Message message = new Message();
-        message.setContent(messageDto.getContent());
-        message.setUser(user);
-        return message;
-    }
 }

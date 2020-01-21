@@ -8,7 +8,6 @@ import pl.coderslab.Driver.converters.UserConverter;
 import pl.coderslab.Driver.dto.TestDto;
 import pl.coderslab.Driver.dto.TestResultDto;
 import pl.coderslab.Driver.entities.*;
-import pl.coderslab.Driver.jwt.JwtTokenUtil;
 import pl.coderslab.Driver.repositories.*;
 import java.util.List;
 
@@ -20,22 +19,19 @@ public class TestController {
     TestRepository testRepository;
 
     @Autowired
-    AdviceRepository adviceRepository;
-
-    @Autowired
-    AnswerRepository answerRepository;
+    TestConverter testConverter;
 
     @Autowired
     TestResultRepository testResultRepository;
 
     @Autowired
-    TestConverter testConverter;
-
-    @Autowired
     TestResultConverter testResultConverter;
 
     @Autowired
-    UserRepository userRepository;
+    AdviceRepository adviceRepository;
+
+    @Autowired
+    AnswerRepository answerRepository;
 
     @Autowired
     UserConverter userConverter;
@@ -58,13 +54,9 @@ public class TestController {
         User user = userConverter.convertTokenToUser(token);
         Test test = testRepository.findTestById(testId);
         Answer answer = answerRepository.findAnswerById(answerId);
-        TestResult testResult = new TestResult();
-        testResult.setTest(test);
-        testResult.setUser(user);
-        testResult.setGivenAnswer(answer);
-        testResult.setAnswerCorrect(answer.isCorrect());
-        testResultRepository.save(testResult);
-        return testResultConverter.convertTestResultToTestResultDto(testResult);
+        TestResult result = testResultConverter.recordResult(user, test, answer);
+        testResultRepository.save(result);
+        return testResultConverter.convertTestResultToTestResultDto(result);
     }
 
 }

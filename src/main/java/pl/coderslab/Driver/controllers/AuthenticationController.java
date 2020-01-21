@@ -28,9 +28,6 @@ public class AuthenticationController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
-    @Autowired
-    private UserRepository userRepository;
-
     @PostMapping("/registerUser")
     public ResponseEntity<?> saveUser(@RequestBody UserDto userDto) throws Exception {
         return ResponseEntity.ok(userDetailsService.save(userDto));

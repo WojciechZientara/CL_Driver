@@ -22,9 +22,6 @@ import java.util.List;
 public class AdviceController {
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
     UserConverter userConverter;
 
     @Autowired
@@ -35,9 +32,6 @@ public class AdviceController {
 
     @Autowired
     AdviceConverter adviceConverter;
-
-    @Autowired
-    JwtTokenUtil jwtTokenUtil;
 
     @GetMapping("/getNew")
     public AdviceDto getNew(@RequestHeader(name="Authorization") String token){
