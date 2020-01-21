@@ -2,9 +2,11 @@ package pl.coderslab.Driver.converters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import pl.coderslab.Driver.dto.UserDto;
 import pl.coderslab.Driver.entities.User;
+import pl.coderslab.Driver.jwt.JwtTokenUtil;
 import pl.coderslab.Driver.repositories.RoleRepository;
 import pl.coderslab.Driver.repositories.UserRepository;
 
@@ -20,7 +22,10 @@ public class UserConverter {
     RoleRepository roleRepository;
 
     @Autowired
-    BCryptPasswordEncoder encoder;
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
 
     
     public User convertUserDtoToUser(UserDto userDto) {
@@ -28,7 +33,7 @@ public class UserConverter {
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
-        user.setPassword(encoder.encode(userDto.getPassword()));
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setTestResults(new HashSet<>());
         user.setMessages(new HashSet<>());
         user.setDisplays(new HashSet<>());
@@ -36,6 +41,11 @@ public class UserConverter {
         user.setRoles(new HashSet<>());
         user.getRoles().add(roleRepository.findRoleByName("ROLE_USER"));
         return user;
+    }
+
+    public User convertTokenToUser(String token) {
+        String userEmail = jwtTokenUtil.getUsernameFromToken(token.substring(7));
+        return userRepository.findUserByEmail(userEmail);
     }
 
 }

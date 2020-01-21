@@ -2,10 +2,7 @@ package pl.coderslab.Driver.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.Driver.converters.AdviceConverter;
-import pl.coderslab.Driver.converters.ConversationConverter;
-import pl.coderslab.Driver.converters.DisplayConverter;
-import pl.coderslab.Driver.converters.MessageConverter;
+import pl.coderslab.Driver.converters.*;
 import pl.coderslab.Driver.dto.AdviceDto;
 import pl.coderslab.Driver.dto.ConversationDto;
 import pl.coderslab.Driver.dto.MessageDto;
@@ -27,6 +24,9 @@ public class ConversationController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    UserConverter userConverter;
 
     @Autowired
     AdviceRepository adviceRepository;
@@ -51,11 +51,14 @@ public class ConversationController {
 
 
     @PostMapping("/postNewConversation")
-    public void postNewConversation(@RequestBody ConversationDto conversationDto) {
+    public void postNewConversation(@RequestBody ConversationDto conversationDto,
+                                    @RequestHeader(name="Authorization") String token) {
+        User user = userConverter.convertTokenToUser(token);
         Conversation conversation = conversationConverter.convertConversationDtoToConversation(conversationDto);
         conversationRepository.save(conversation);
+        conversationRepository.flush();
         for (MessageDto messageDto : conversationDto.getMessageDtos()) {
-            Message message = messageConverter.convertMessageDtoToMessage(messageDto);
+            Message message = messageConverter.convertMessageDtoToMessage(messageDto, user, conversation);
             messageRepository.save(message);
         }
     }
@@ -78,8 +81,10 @@ public class ConversationController {
     }
 
     @PostMapping("/postNewMessage")
-    public void postNewMessage(@RequestBody MessageDto messageDto) {
-        Message message = messageConverter.convertMessageDtoToMessage(messageDto);
+    public void postNewMessage(@RequestBody MessageDto messageDto,
+                               @RequestHeader(name="Authorization") String token) {
+        User user = userConverter.convertTokenToUser(token);
+        Message message = messageConverter.convertMessageDtoToMessage(messageDto, user);
         messageRepository.save(message);
     }
 

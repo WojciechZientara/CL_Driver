@@ -1,34 +1,58 @@
 package pl.coderslab.Driver.controllers;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.Driver.converters.AdviceConverter;
-import pl.coderslab.Driver.converters.DisplayConverter;
-import pl.coderslab.Driver.converters.UserConverter;
-import pl.coderslab.Driver.dto.AdviceDto;
 import pl.coderslab.Driver.dto.UserDto;
-import pl.coderslab.Driver.entities.Advice;
-import pl.coderslab.Driver.entities.User;
-import pl.coderslab.Driver.repositories.AdviceRepository;
+import pl.coderslab.Driver.jwt.JwtRequest;
+import pl.coderslab.Driver.jwt.JwtResponse;
+import pl.coderslab.Driver.jwt.JwtTokenUtil;
+import pl.coderslab.Driver.jwt.JwtUserDetailsService;
 import pl.coderslab.Driver.repositories.UserRepository;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
-@RequestMapping("/authenticate")
+@CrossOrigin
 public class AuthenticationController {
 
     @Autowired
-    UserRepository userRepository;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    UserConverter userConverter;
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private JwtUserDetailsService userDetailsService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/registerUser")
-    public void registerUser(@RequestBody UserDto userDto) {
-        User user = userConverter.convertUserDtoToUser(userDto);
-        userRepository.save(user);
+    public ResponseEntity<?> saveUser(@RequestBody UserDto userDto) throws Exception {
+        return ResponseEntity.ok(userDetailsService.save(userDto));
+    }
+
+    @PostMapping("/authenticateUser")
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+        authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
+        final UserDetails userDetails = userDetailsService
+                .loadUserByUsername(authenticationRequest.getEmail());
+        final String token = jwtTokenUtil.generateToken(userDetails);
+        return ResponseEntity.ok(new JwtResponse(token));
+    }
+
+    private void authenticate(String username, String password) throws Exception {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
+            throw new Exception("INVALID_CREDENTIALS", e);
+        }
     }
 
 }

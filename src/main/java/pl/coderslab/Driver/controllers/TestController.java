@@ -1,17 +1,15 @@
 package pl.coderslab.Driver.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.coderslab.Driver.converters.TestConverter;
 import pl.coderslab.Driver.converters.TestResultConverter;
+import pl.coderslab.Driver.converters.UserConverter;
 import pl.coderslab.Driver.dto.TestDto;
 import pl.coderslab.Driver.dto.TestResultDto;
 import pl.coderslab.Driver.entities.*;
+import pl.coderslab.Driver.jwt.JwtTokenUtil;
 import pl.coderslab.Driver.repositories.*;
-
 import java.util.List;
 
 @RestController
@@ -39,19 +37,25 @@ public class TestController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    UserConverter userConverter;
+
     @GetMapping("/get/{adviceId}")
     public TestDto getTestByAdviceId(@PathVariable Long adviceId){
         Advice advice = adviceRepository.findAdviceById(adviceId);
         List<Test> tests = testRepository.findTestWithAnswersByAdviceId(advice.getId());
-        Test test = tests.get(0);
-        return testConverter.convertTestToTestDto(test);
+        if (tests.size() == 0) {
+            return null;
+        } else {
+            Test test = tests.get(0);
+            return testConverter.convertTestToTestDto(test);
+        }
     }
 
     @GetMapping("/resolve/{testId}/{answerId}")
-    public TestResultDto resolveTest(@PathVariable Long testId, @PathVariable Long answerId){
-        //Dummy user - to be changed once the authentication mechanism is implemented
-        User user = userRepository.findUserById(7L);
-
+    public TestResultDto resolveTest(@PathVariable Long testId, @PathVariable Long answerId,
+                                     @RequestHeader(name="Authorization") String token){
+        User user = userConverter.convertTokenToUser(token);
         Test test = testRepository.findTestById(testId);
         Answer answer = answerRepository.findAnswerById(answerId);
         TestResult testResult = new TestResult();

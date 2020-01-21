@@ -5,6 +5,8 @@ import pl.coderslab.Driver.dto.AdviceDto;
 import pl.coderslab.Driver.entities.Advice;
 import pl.coderslab.Driver.entities.Conversation;
 
+import java.util.ArrayList;
+
 @Component
 public class AdviceConverter {
     
@@ -18,6 +20,7 @@ public class AdviceConverter {
         if (advice.getTest() != null) {
             dto.setTestId(advice.getTest().getId());
         }
+        dto.setConversationIds(new ArrayList<>());
         for (Conversation conversation : advice.getConversation()) {
             dto.getConversationIds().add(conversation.getId());
         }
