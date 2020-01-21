@@ -24,6 +24,7 @@ public class User {
     private String lastName;
 
     @NotBlank
+    @Column(unique = true)
     private String email;
 
     @NotBlank
@@ -40,5 +41,11 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<Advice> advices;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "users_roles", joinColumns = {
+            @JoinColumn(name = "user_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "role_id") })
+    private Set<Role> roles;
 
 }
