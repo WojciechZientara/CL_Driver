@@ -77,4 +77,10 @@ public class ConversationController {
         return conversationDto;
     }
 
+    @PostMapping("/postNewMessage")
+    public void postNewMessage(@RequestBody MessageDto messageDto) {
+        Message message = messageConverter.convertMessageDtoToMessage(messageDto);
+        messageRepository.save(message);
+    }
+
 }

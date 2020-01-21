@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.coderslab.Driver.entities.Message;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter @Setter @NoArgsConstructor
