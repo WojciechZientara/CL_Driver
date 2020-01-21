@@ -19,6 +19,9 @@ public class ConversationConverter {
 
     @Autowired
     AdviceRepository adviceRepository;
+
+    @Autowired
+    MessageConverter messageConverter;
     
     public Conversation convertConversationDtoToConversation(ConversationDto conversationDto) {
         Conversation conversation = new Conversation();
@@ -34,7 +37,18 @@ public class ConversationConverter {
         conversationDto.setId(conversation.getId());
         conversationDto.setAdviceId(conversation.getAdvice().getId());
         conversationDto.setSubject(conversation.getSubject());
+        return conversationDto;
+    }
+
+    public ConversationDto convertConversationToConversationDtoWithMessages(Conversation conversation) {
+        ConversationDto conversationDto = new ConversationDto();
+        conversationDto.setId(conversation.getId());
+        conversationDto.setAdviceId(conversation.getAdvice().getId());
+        conversationDto.setSubject(conversation.getSubject());
         conversationDto.setMessageDtos(new HashSet<>());
+        for (Message message : conversation.getMessages()) {
+            conversationDto.getMessageDtos().add(messageConverter.convertMessageToMessageDto(message));
+        }
         return conversationDto;
     }
 }

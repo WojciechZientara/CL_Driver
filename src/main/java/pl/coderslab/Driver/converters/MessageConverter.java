@@ -31,4 +31,14 @@ public class MessageConverter {
         message.setCreated(messageDto.getCreated());
         return message;
     }
+
+    public MessageDto convertMessageToMessageDto(Message message) {
+        MessageDto messageDto = new MessageDto();
+        messageDto.setId(message.getId());
+        messageDto.setConversationId(message.getConversation().getId());
+        messageDto.setContent(message.getContent());
+        messageDto.setUserId(message.getUser().getId());
+        messageDto.setCreated(message.getCreated());
+        return messageDto;
+    }
 }

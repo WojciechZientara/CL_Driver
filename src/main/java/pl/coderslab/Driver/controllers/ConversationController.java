@@ -60,7 +60,7 @@ public class ConversationController {
         }
     }
 
-    @GetMapping("/getConversations/{adviceId}")
+    @GetMapping("/getConversationsList/{adviceId}")
     List<ConversationDto> getConversations(@PathVariable Long adviceId) {
         List<Conversation> conversations = conversationRepository.findConversationsByAdvice_Id(adviceId);
         List<ConversationDto> conversationDtos = new ArrayList<>();
@@ -68,6 +68,13 @@ public class ConversationController {
             conversationDtos.add(conversationConverter.convertConversationToConversationDtoWithoutMessages(conversation));
         }
         return conversationDtos;
+    }
+
+    @GetMapping("/getConversation/{conversationId}")
+    ConversationDto getConversation(@PathVariable Long conversationId) {
+        Conversation conversation = conversationRepository.findConversationById(conversationId);
+        ConversationDto conversationDto = conversationConverter.convertConversationToConversationDtoWithMessages(conversation);
+        return conversationDto;
     }
 
 }
