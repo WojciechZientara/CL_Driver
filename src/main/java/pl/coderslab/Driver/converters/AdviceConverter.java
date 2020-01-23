@@ -1,14 +1,21 @@
 package pl.coderslab.Driver.converters;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.coderslab.Driver.dto.AdviceDto;
 import pl.coderslab.Driver.entities.Advice;
 import pl.coderslab.Driver.entities.Conversation;
+import pl.coderslab.Driver.entities.TestResult;
+import pl.coderslab.Driver.entities.User;
+import pl.coderslab.Driver.repositories.TestRepository;
 
 import java.util.ArrayList;
 
 @Component
 public class AdviceConverter {
+
+    @Autowired
+    TestRepository testRepository;
     
     public AdviceDto convertAdviceToDto(Advice advice) {
         AdviceDto dto = new AdviceDto();
@@ -26,5 +33,21 @@ public class AdviceConverter {
         }
         dto.setCreated(advice.getCreated());
         return dto;
+    }
+
+    public Advice convertAdviceDtoToAdvice(AdviceDto adviceDto, User user) {
+
+        Advice advice = new Advice();
+        if (adviceDto.getId() != null) {
+            advice.setId(adviceDto.getId());
+        }
+        advice.setUser(user);
+        advice.setTitle(adviceDto.getTitle());
+        advice.setContent(adviceDto.getContent());
+        advice.setAppendix(adviceDto.getAppendix());
+        if (adviceDto.getTestId() != null) {
+            advice.setTest(testRepository.findTestById(adviceDto.getTestId()));
+        }
+        return advice;
     }
 }

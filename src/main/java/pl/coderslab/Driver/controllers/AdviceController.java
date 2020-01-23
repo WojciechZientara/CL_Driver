@@ -1,10 +1,7 @@
 package pl.coderslab.Driver.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.coderslab.Driver.converters.AdviceConverter;
 import pl.coderslab.Driver.converters.DisplayConverter;
 import pl.coderslab.Driver.converters.UserConverter;
@@ -74,6 +71,15 @@ public class AdviceController {
             dtos.add(adviceConverter.convertAdviceToDto(advice));
         }
         return dtos;
+    }
+
+    @PostMapping("/postNew")
+    public AdviceDto postNew(@RequestBody AdviceDto adviceDto,
+                             @RequestHeader(name="Authorization") String token) {
+        User user = userConverter.convertTokenToUser(token);
+        Advice advice = adviceConverter.convertAdviceDtoToAdvice(adviceDto, user);
+        adviceDto.setId(adviceRepository.save(advice).getId());
+        return adviceDto;
     }
 
 }
