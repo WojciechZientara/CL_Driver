@@ -14,6 +14,7 @@ public class AdviceDto {
 
     private Long id;
     private String author;
+    private Long userId;
     private String title;
     private String content;
     private byte[] appendix;

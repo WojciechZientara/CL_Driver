@@ -8,6 +8,7 @@ import pl.coderslab.Driver.entities.Conversation;
 import pl.coderslab.Driver.entities.TestResult;
 import pl.coderslab.Driver.entities.User;
 import pl.coderslab.Driver.repositories.TestRepository;
+import pl.coderslab.Driver.repositories.UserRepository;
 
 import java.util.ArrayList;
 
@@ -16,6 +17,9 @@ public class AdviceConverter {
 
     @Autowired
     TestRepository testRepository;
+
+    @Autowired
+    UserRepository userRepository;
     
     public AdviceDto convertAdviceToDto(Advice advice) {
         AdviceDto dto = new AdviceDto();
@@ -37,11 +41,23 @@ public class AdviceConverter {
 
     public Advice convertAdviceDtoToAdvice(AdviceDto adviceDto, User user) {
 
+        Advice advice = createAdvice(adviceDto);
+        advice.setUser(user);
+        return advice;
+    }
+
+    public Advice convertAdviceDtoToAdvice(AdviceDto adviceDto) {
+
+        Advice advice = createAdvice(adviceDto);
+        advice.setUser(userRepository.findUserById(adviceDto.getUserId()));
+        return advice;
+    }
+
+    public Advice createAdvice(AdviceDto adviceDto){
         Advice advice = new Advice();
         if (adviceDto.getId() != null) {
             advice.setId(adviceDto.getId());
         }
-        advice.setUser(user);
         advice.setTitle(adviceDto.getTitle());
         advice.setContent(adviceDto.getContent());
         advice.setAppendix(adviceDto.getAppendix());
