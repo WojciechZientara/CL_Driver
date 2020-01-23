@@ -26,29 +26,29 @@ public class ConversationController {
     ConversationConverter conversationConverter;
 
     @PostMapping("/postNewConversation")
-    public ConversationDto postNewConversation(@RequestBody ConversationDto conversationDto,
+    public ResponseEntity<?> postNewConversation(@RequestBody ConversationDto conversationDto,
                                                  @RequestHeader(name="Authorization") String token) {
         User user = userConverter.convertTokenToUser(token);
         Conversation conversation = conversationConverter.convertConversationDtoToConversation(conversationDto);
         conversation = conversationRepository.save(conversation);
-        return conversationConverter.convertConversationToConversationDtoWithoutMessages(conversation);
+        return ResponseEntity.ok(conversationConverter.convertConversationToConversationDtoWithoutMessages(conversation));
     }
 
     @GetMapping("/getConversationsList/{adviceId}")
-    List<ConversationDto> getConversations(@PathVariable Long adviceId) {
+    public ResponseEntity<?> getConversations(@PathVariable Long adviceId) {
         List<Conversation> conversations = conversationRepository.findConversationsByAdvice_Id(adviceId);
         List<ConversationDto> conversationDtos = new ArrayList<>();
         for (Conversation conversation : conversations) {
             conversationDtos.add(conversationConverter.convertConversationToConversationDtoWithoutMessages(conversation));
         }
-        return conversationDtos;
+        return ResponseEntity.ok(conversationDtos);
     }
 
     @GetMapping("/getConversation/{conversationId}")
-    ConversationDto getConversation(@PathVariable Long conversationId) {
+    public ResponseEntity<?> getConversation(@PathVariable Long conversationId) {
         Conversation conversation = conversationRepository.findConversationById(conversationId);
         ConversationDto conversationDto = conversationConverter.convertConversationToConversationDtoWithMessages(conversation);
-        return conversationDto;
+        return ResponseEntity.ok(conversationDto);
     }
 
 }

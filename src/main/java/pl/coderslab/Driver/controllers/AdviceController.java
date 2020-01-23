@@ -9,9 +9,7 @@ import pl.coderslab.Driver.converters.UserConverter;
 import pl.coderslab.Driver.dto.AdviceDto;
 import pl.coderslab.Driver.entities.Advice;
 import pl.coderslab.Driver.entities.User;
-import pl.coderslab.Driver.jwt.JwtTokenUtil;
 import pl.coderslab.Driver.repositories.AdviceRepository;
-import pl.coderslab.Driver.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,68 +30,67 @@ public class AdviceController {
     AdviceConverter adviceConverter;
 
     @GetMapping("/getNew")
-    public AdviceDto getNew(@RequestHeader(name="Authorization") String token){
+    public ResponseEntity<?> getNew(@RequestHeader(name="Authorization") String token){
 
         User user = userConverter.convertTokenToUser(token);
         List<Advice> newAdvices = adviceRepository.findNewAdvicesByUserId(user.getId());
 
         if (newAdvices.size() == 0) {
-            // return all nulls;
-            return new AdviceDto();
+            return ResponseEntity.ok("No more advices for this user.");
         } else {
             Advice newAdvice = newAdvices.get(0);
             //mark advice as seen by user -> generates a new record in the displays table in the database
             displayConverter.markAdviceAsSeenByUser(newAdvice, user);
-            return adviceConverter.convertAdviceToDto(newAdvice);
+            return ResponseEntity.ok(adviceConverter.convertAdviceToDto(newAdvice));
         }
     }
 
     @GetMapping("/get10MostPopular")
-    public List<AdviceDto> getMostPopular() {
+    public ResponseEntity<?> getMostPopular() {
         List<Advice> advices = adviceRepository.find10MostPopularAdvices();
         List<AdviceDto> dtos = new ArrayList<>();
         for (Advice advice : advices) {
             dtos.add(adviceConverter.convertAdviceToDto(advice));
         }
-        return dtos;
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/getTheAdviceOfTheWeek")
-    public AdviceDto getTheAdviceOfTheWeek() {
+    public ResponseEntity<?> getTheAdviceOfTheWeek() {
         Advice advice = adviceRepository.findTheMostPopularLastWeek();
-        return adviceConverter.convertAdviceToDto(advice);
+        return ResponseEntity.ok(adviceConverter.convertAdviceToDto(advice));
     }
 
     @GetMapping("/get10Newest")
-    public List<AdviceDto> getNewest() {
+    public ResponseEntity<?> getNewest() {
         List<Advice> advices = adviceRepository.find10NewestAdvices();
         List<AdviceDto> dtos = new ArrayList<>();
         for (Advice advice : advices) {
             dtos.add(adviceConverter.convertAdviceToDto(advice));
         }
-        return dtos;
+        return ResponseEntity.ok(dtos);
     }
 
     @PostMapping("/postAdvice")
-    public AdviceDto postNew(@RequestBody AdviceDto adviceDto,
+    public ResponseEntity<?> postNew(@RequestBody AdviceDto adviceDto,
                              @RequestHeader(name="Authorization") String token) {
         User user = userConverter.convertTokenToUser(token);
         Advice advice = adviceConverter.convertAdviceDtoToAdvice(adviceDto, user);
         adviceDto.setId(adviceRepository.save(advice).getId());
-        return adviceDto;
+        return ResponseEntity.ok(adviceDto);
     }
 
     @PutMapping("/editAdvice")
-    public AdviceDto editAdvice(@RequestBody AdviceDto adviceDto,
+    public ResponseEntity<?> editAdvice(@RequestBody AdviceDto adviceDto,
                              @RequestHeader(name="Authorization") String token) {
         User user = userConverter.convertTokenToUser(token);
         Advice originalAdvice = adviceRepository.findAdviceById(adviceDto.getId());
         if (originalAdvice.getUser().getId() == user.getId()) {
             Advice newAdvice = adviceConverter.convertAdviceDtoToAdvice(adviceDto, user);
             adviceRepository.save(newAdvice);
-            return adviceDto;
+            return ResponseEntity.ok(adviceDto);
         } else {
-            return null;
+            return ResponseEntity.badRequest().body("Not allowed to edit this advice.");
         }
     }
 
@@ -106,7 +103,7 @@ public class AdviceController {
             adviceRepository.deleteById(adviceId);
             return ResponseEntity.ok().body("Success");
         } else {
-            return ResponseEntity.badRequest().body("Not allowed");
+            return ResponseEntity.badRequest().body("Not allowed to delete this advice.");
         }
     }
 
