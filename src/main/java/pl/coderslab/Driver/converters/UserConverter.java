@@ -47,4 +47,22 @@ public class UserConverter {
         return userRepository.findUserByEmail(userEmail);
     }
 
+    public UserDto convertUserToUserDto(User user) {
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setFirstName(user.getFirstName());
+        userDto.setLastName(user.getLastName());
+        userDto.setEmail(user.getEmail());
+        userDto.setPassword(user.getPassword());
+        return userDto;
+    }
+
+    public User updateUser(User user, User update) {
+        user.setFirstName(update.getFirstName());
+        user.setLastName(update.getLastName());
+        user.setEmail(update.getEmail());
+        user.setPassword(passwordEncoder.encode(update.getPassword()));
+        return user;
+    }
+
 }
