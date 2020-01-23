@@ -26,7 +26,7 @@ public class AdminUserController {
 
 
     @GetMapping("/getUser/{userId}")
-    public ResponseEntity<?> getAdvice(@PathVariable Long userId){
+    public ResponseEntity<?> getUser(@PathVariable Long userId){
 
         User user = userRepository.findUserById(userId);
         if (user == null) {
