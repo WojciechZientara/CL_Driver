@@ -27,16 +27,22 @@ public class ConversationDtoDeserializer extends JsonDeserializer<ConversationDt
         JsonNode node = oc.readTree(jp);
 
         ConversationDto conversationDto = new ConversationDto();
-        conversationDto.setMessageDtos(new HashSet<>());
 
+        Long conversationId = node.get("id").asLong();
+        if (conversationId != null) {
+            conversationDto.setId(conversationId);
+        }
         conversationDto.setAdviceId(node.get("adviceId").asLong());
         conversationDto.setSubject(node.get("subject").asText());
 
+        conversationDto.setMessageDtos(new HashSet<>());
         JsonNode messagesDtosNode = node.get("messageDtos");
-        for (JsonNode messageDtoNode : messagesDtosNode){
-            MessageDto messageDto = new MessageDto();
-            messageDto.setContent(messageDtoNode.get("content").asText());
-            conversationDto.getMessageDtos().add(messageDto);
+        if (messagesDtosNode != null) {
+            for (JsonNode messageDtoNode : messagesDtosNode){
+                MessageDto messageDto = new MessageDto();
+                messageDto.setContent(messageDtoNode.get("content").asText());
+                conversationDto.getMessageDtos().add(messageDto);
+            }
         }
 
         return conversationDto;

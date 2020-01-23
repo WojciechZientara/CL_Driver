@@ -53,4 +53,11 @@ public class ConversationConverter {
         }
         return conversationDto;
     }
+
+    public Conversation updateConversation(Conversation conversation, Conversation update) {
+        conversation.setSubject(update.getSubject());
+        conversation.setMessages(update.getMessages());
+        conversation.setAdvice(update.getAdvice());
+        return conversation;
+    }
 }
