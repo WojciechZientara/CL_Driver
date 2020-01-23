@@ -12,6 +12,7 @@ import pl.coderslab.Driver.repositories.ConversationRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/conversation")
 public class ConversationController {
@@ -51,4 +52,15 @@ public class ConversationController {
         return ResponseEntity.ok(conversationDto);
     }
 
+    @GetMapping("/search/{phrase}")
+    public ResponseEntity<?> getSearchResults(@PathVariable String phrase) {
+
+        List<Conversation> conversations = conversationRepository.
+                findConversationsBySubjectContainingIgnoreCase(phrase);
+        List<ConversationDto> dtos = new ArrayList<>();
+        for (Conversation conversation : conversations) {
+            dtos.add(conversationConverter.convertConversationToConversationDtoWithoutMessages(conversation));
+        }
+        return ResponseEntity.ok(dtos);
+    }
 }
