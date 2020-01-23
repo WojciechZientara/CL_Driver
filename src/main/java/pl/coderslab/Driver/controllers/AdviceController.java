@@ -1,6 +1,7 @@
 package pl.coderslab.Driver.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.Driver.converters.AdviceConverter;
 import pl.coderslab.Driver.converters.DisplayConverter;
@@ -73,13 +74,40 @@ public class AdviceController {
         return dtos;
     }
 
-    @PostMapping("/postNew")
+    @PostMapping("/postAdvice")
     public AdviceDto postNew(@RequestBody AdviceDto adviceDto,
                              @RequestHeader(name="Authorization") String token) {
         User user = userConverter.convertTokenToUser(token);
         Advice advice = adviceConverter.convertAdviceDtoToAdvice(adviceDto, user);
         adviceDto.setId(adviceRepository.save(advice).getId());
         return adviceDto;
+    }
+
+    @PutMapping("/editAdvice")
+    public AdviceDto editAdvice(@RequestBody AdviceDto adviceDto,
+                             @RequestHeader(name="Authorization") String token) {
+        User user = userConverter.convertTokenToUser(token);
+        Advice originalAdvice = adviceRepository.findAdviceById(adviceDto.getId());
+        if (originalAdvice.getUser().getId() == user.getId()) {
+            Advice newAdvice = adviceConverter.convertAdviceDtoToAdvice(adviceDto, user);
+            adviceRepository.save(newAdvice);
+            return adviceDto;
+        } else {
+            return null;
+        }
+    }
+
+    @DeleteMapping("/deleteAdvice/{adviceId}")
+    public ResponseEntity<?> deleteADvice(@PathVariable Long adviceId,
+                                          @RequestHeader(name="Authorization") String token) {
+        User user = userConverter.convertTokenToUser(token);
+        Advice advice = adviceRepository.findAdviceById(adviceId);
+        if (advice.getUser().getId() == user.getId()) {
+            adviceRepository.deleteById(adviceId);
+            return ResponseEntity.ok().body("Success");
+        } else {
+            return ResponseEntity.badRequest().body("Not allowed");
+        }
     }
 
 }
