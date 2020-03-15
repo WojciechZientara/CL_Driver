@@ -15,6 +15,7 @@ The application provides the <b>REST API</b> and has been prepared as the Coders
 * Spring Web
 * Spring Data JPA
 * Spring Security
+* Hibernate
 * JSON Web Token
 * MySQL DB
 * Jackson
